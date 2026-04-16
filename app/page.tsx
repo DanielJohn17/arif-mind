@@ -5,6 +5,8 @@ import { ArrowRight, BookOpen, ShieldCheck, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/utils";
 
 const highlights = [
@@ -28,7 +30,27 @@ const highlights = [
   },
 ];
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const isAuthorized = await (async () => {
+    if (!isSupabaseConfigured()) {
+      return false;
+    }
+
+    const supabase = await createSupabaseServerClient();
+
+    if (!supabase) {
+      return false;
+    }
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    return Boolean(user);
+  })();
+
+  const exploreHref = isAuthorized ? "/wiki" : "/login";
+
   return (
     <main className="min-h-screen bg-[#f6f7fb]">
       <div className="relative overflow-hidden">
@@ -61,7 +83,7 @@ export default function LandingPage() {
                 Log in to ArifMind
               </Link>
               <Link
-                href="/wiki"
+                href={exploreHref}
                 className={cn(
                   buttonVariants({ variant: "outline" }),
                   "h-11 rounded-xl border-[#cbd5f5] px-6 text-[#1e3a8a] hover:bg-white"
