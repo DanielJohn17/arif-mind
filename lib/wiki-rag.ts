@@ -317,5 +317,9 @@ export async function searchWikiKnowledgeBase(question: string) {
 }
 
 export async function answerWikiQuestion(question: string): Promise<WikiAskResponse> {
-  return generateApiAnswer(question);
+  const result = await generateApiAnswer(question);
+  return {
+    ...result,
+    question: question,
+  };
 }

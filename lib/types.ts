@@ -23,7 +23,8 @@ export type WikiAnswerSource = {
 
 export type WikiAskResponse = {
   answer: string;
-  sources: WikiAnswerSource[];
+  question?: string;
+  sources?: WikiAnswerSource[];
 };
 
 export type LessonLearned = {
