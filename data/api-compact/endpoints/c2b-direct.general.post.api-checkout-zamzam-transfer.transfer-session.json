@@ -1,0 +1,36 @@
+{
+  "id": "c2b-direct.general.post.api-checkout-zamzam-transfer.transfer-session",
+  "title": "C2B > Direct Payment > Untitled > Transfer Session",
+  "method": "POST",
+  "path": "/api/checkout/zamzam/transfer",
+  "provider": "general",
+  "flow": "c2b_direct",
+  "headers": [
+    "x-arifpay-key"
+  ],
+  "body": {
+    "templateId": null,
+    "required": [
+      "accountNumber",
+      "sessionId"
+    ],
+    "example": {
+      "accountNumber": "0026590620101",
+      "sessionId": "01130346DC67"
+    }
+  },
+  "tags": [
+    "c2b",
+    "direct",
+    "payment",
+    "untitled",
+    "transfer",
+    "session",
+    "post",
+    "api",
+    "checkout",
+    "zamzam",
+    "accountnumber",
+    "sessionid"
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "id": "c2b-direct.telebirr.post.api-checkout-session.create-check-out-session-id-copy-2",
+  "title": "C2B > Direct Payment > Telebirr > CBE > Create Check out session id Copy 2",
+  "method": "POST",
+  "path": "/api/checkout/session",
+  "provider": "telebirr",
+  "flow": "c2b_direct",
+  "headers": [
+    "x-arifpay-key"
+  ],
+  "body": {
+    "templateId": null,
+    "required": [
+      "cancelUrl",
+      "phone",
+      "email",
+      "nonce",
+      "errorUrl",
+      "notifyUrl",
+      "successUrl",
+      "paymentMethods",
+      "expireDate",
+      "items",
+      "name",
+      "quantity",
+      "price",
+      "description",
+      "beneficiaries",
+      "accountNumber",
+      "bank",
+      "amount",
+      "lang"
+    ],
+    "example": {
+      "cancelUrl": "https://example1.com",
+      "phone": "251922655097",
+      "email": "Ex@gmail.net",
+      "nonce": "251asdsaddsasad93554asdasd8208sadas",
+      "errorUrl": "http://error.com",
+      "notifyUrl": "https://664db983ede9a2b5565497ee.mockapi.io/user",
+      "successUrl": "http://example.com",
+      "paymentMethods": [
+        "TELEBIRR_USSD"
+      ],
+      "expireDate": "2026-02-10T15:54:55",
+      "items": [
+        {
+          "name": "ሙዝ",
+          "quantity": 1,
+          "price": 3,
+          "description": "test"
+        }
+      ],
+      "name": "value",
+      "quantity": 1,
+      "price": 1,
+      "description": "value",
+      "beneficiaries": [
+        {
+          "accountNumber": "01320811436100",
+          "bank": "AWINETAA",
+          "amount": 3
+        }
+      ],
+      "accountNumber": "0000000000000",
+      "bank": "value",
+      "amount": 1,
+      "lang": "EN"
+    }
+  },
+  "tags": [
+    "c2b",
+    "direct",
+    "payment",
+    "telebirr",
+    "cbe",
+    "check",
+    "out",
+    "session",
+    "post",
+    "api",
+    "checkout",
+    "cancelurl",
+    "phone",
+    "email",
+    "nonce",
+    "errorurl",
+    "notifyurl",
+    "successurl",
+    "paymentmethods",
+    "expiredate"
+  ]
+}

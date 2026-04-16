@@ -1,0 +1,30 @@
+{
+  "id": "c2b-direct.general.post.api-checkout-b2b-acount-query-accountnumber-account-here-shortcodes-cbe.account-inqury",
+  "title": "C2B > Direct Payment > Untitled > account inqury",
+  "method": "POST",
+  "path": "/api/checkout/b2b/acount/query?accountNumber=account here&shortCodes=CBE",
+  "provider": "general",
+  "flow": "c2b_direct",
+  "headers": [
+    "x-arifpay-key"
+  ],
+  "body": null,
+  "tags": [
+    "c2b",
+    "direct",
+    "payment",
+    "untitled",
+    "account",
+    "inqury",
+    "post",
+    "api",
+    "checkout",
+    "b2b",
+    "acount",
+    "query",
+    "accountnumber",
+    "here",
+    "shortcodes",
+    "cbe"
+  ]
+}

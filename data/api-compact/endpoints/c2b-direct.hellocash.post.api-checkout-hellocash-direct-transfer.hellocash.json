@@ -1,0 +1,34 @@
+{
+  "id": "c2b-direct.hellocash.post.api-checkout-hellocash-direct-transfer.hellocash",
+  "title": "C2B > Direct Payment > HelloCash > HelloCash",
+  "method": "POST",
+  "path": "/api/checkout/hellocash/direct/transfer",
+  "provider": "hellocash",
+  "flow": "c2b_direct",
+  "headers": [
+    "x-arifpay-key"
+  ],
+  "body": {
+    "templateId": null,
+    "required": [
+      "sessionId",
+      "phoneNumber"
+    ],
+    "example": {
+      "sessionId": "3754BA41DBBE",
+      "phoneNumber": "251932155086"
+    }
+  },
+  "tags": [
+    "c2b",
+    "direct",
+    "payment",
+    "hellocash",
+    "post",
+    "api",
+    "checkout",
+    "transfer",
+    "sessionid",
+    "phonenumber"
+  ]
+}

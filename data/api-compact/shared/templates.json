@@ -1,0 +1,208 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "id": "tpl-01",
+      "method": "POST",
+      "path": "/api/checkout/session",
+      "required": [
+        "cancelUrl",
+        "phone",
+        "email",
+        "nonce",
+        "errorUrl",
+        "notifyUrl",
+        "successUrl",
+        "paymentMethods",
+        "expireDate",
+        "items",
+        "name",
+        "quantity",
+        "price",
+        "description",
+        "image",
+        "beneficiaries",
+        "accountNumber",
+        "bank",
+        "amount",
+        "lang"
+      ],
+      "aliases": {},
+      "example": {
+        "cancelUrl": "https://example.com",
+        "phone": "251941070163",
+        "email": "natnael@arifpay.net",
+        "nonce": "as02501230829b330e126e7c64a1e8a32ec222bdd57ff",
+        "errorUrl": "http://error.com",
+        "notifyUrl": "https://664db983ede9a2b5565497ee.mockapi.io/user",
+        "successUrl": "http://example.com",
+        "paymentMethods": [
+          "AWASH_BIRR"
+        ],
+        "expireDate": "2025-06-01T03:45:27",
+        "items": [
+          {
+            "name": "ሙዝ",
+            "quantity": 5,
+            "price": 2,
+            "description": "Fresh Corner preimuim Banana.",
+            "image": "https://4.imimg.com/data4/KK/KK/GLADMIN-/product-8789_bananas_golden-500x500.jpg"
+          },
+          {
+            "name": "ሙዝ",
+            "quantity": 5,
+            "price": 2,
+            "description": "Fresh Corner preimuim Banana.",
+            "image": "https://4.imimg.com/data4/KK/KK/GLADMIN-/product-8789_bananas_golden-500x500.jpg"
+          }
+        ],
+        "name": "value",
+        "quantity": 1,
+        "price": 1,
+        "description": "value",
+        "image": "value",
+        "beneficiaries": [
+          {
+            "accountNumber": "01320811436100",
+            "bank": "AWINETAA",
+            "amount": 20
+          }
+        ],
+        "accountNumber": "0000000000000",
+        "bank": "value",
+        "amount": 1,
+        "lang": "EN"
+      }
+    },
+    {
+      "id": "tpl-02",
+      "method": "POST",
+      "path": "/api/checkout/session",
+      "required": [
+        "cancelUrl",
+        "lang",
+        "phone",
+        "email",
+        "nonce",
+        "errorUrl",
+        "notifyUrl",
+        "successUrl",
+        "paymentMethods",
+        "expireDate",
+        "items",
+        "name",
+        "quantity",
+        "price",
+        "description",
+        "image",
+        "beneficiaries",
+        "accountNumber",
+        "bank",
+        "amount"
+      ],
+      "aliases": {},
+      "example": {
+        "cancelUrl": "https://cancel.com",
+        "lang": "EN",
+        "phone": "251954926213",
+        "email": "Bulk@gmail.com",
+        "nonce": "Bulk_BaULKTEST2",
+        "errorUrl": "http://error.com",
+        "notifyUrl": "http://success.com",
+        "successUrl": "http://success.com",
+        "paymentMethods": [
+          "CBE"
+        ],
+        "expireDate": "2025-01-14T23:18:11.755Z",
+        "items": [
+          {
+            "name": "bulk",
+            "quantity": 1,
+            "price": 1,
+            "description": "bulk",
+            "image": "https://img.jpg"
+          }
+        ],
+        "name": "value",
+        "quantity": 1,
+        "price": 1,
+        "description": "value",
+        "image": "value",
+        "beneficiaries": [
+          {
+            "accountNumber": "01320811436100",
+            "bank": "AWINETAA",
+            "amount": 1
+          }
+        ],
+        "accountNumber": "0000000000000",
+        "bank": "value",
+        "amount": 1
+      }
+    },
+    {
+      "id": "tpl-03",
+      "method": "POST",
+      "path": "/api/checkout/session",
+      "required": [
+        "cancelUrl",
+        "phone",
+        "email",
+        "nonce",
+        "successUrl",
+        "errorUrl",
+        "notifyUrl",
+        "paymentMethods",
+        "expireDate",
+        "items",
+        "name",
+        "quantity",
+        "price",
+        "description",
+        "beneficiaries",
+        "accountNumber",
+        "bank",
+        "amount",
+        "lang",
+        "currency"
+      ],
+      "aliases": {},
+      "example": {
+        "cancelUrl": "https://example.com",
+        "phone": "251900000000",
+        "email": "user@example.com",
+        "nonce": "random-nonce",
+        "successUrl": "https://example.com",
+        "errorUrl": "https://example.com",
+        "notifyUrl": "https://example.com",
+        "paymentMethods": [
+          "METHOD"
+        ],
+        "expireDate": "2026-01-01T00:00:00Z",
+        "items": [
+          {
+            "name": "Product",
+            "quantity": 1,
+            "price": 1
+          }
+        ],
+        "name": "value",
+        "quantity": 1,
+        "price": 1,
+        "description": "value",
+        "beneficiaries": [
+          {
+            "accountNumber": "0000000000000",
+            "bank": "AWINETAA",
+            "amount": 1
+          }
+        ],
+        "accountNumber": "0000000000000",
+        "bank": "value",
+        "amount": 1,
+        "lang": "EN",
+        "currency": "ETB"
+      }
+    }
+  ]
+}

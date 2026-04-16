@@ -1,0 +1,34 @@
+{
+  "id": "c2b-direct.hellocash.post.api-checkout-hellocash-direct-verify.hellocash-otp-verify",
+  "title": "C2B > Direct Payment > HelloCash > HelloCash OTP Verify",
+  "method": "POST",
+  "path": "/api/checkout/hellocash/direct/verify",
+  "provider": "hellocash",
+  "flow": "c2b_direct",
+  "headers": [
+    "x-arifpay-key"
+  ],
+  "body": {
+    "templateId": null,
+    "required": [
+      "sessionId",
+      "otp"
+    ],
+    "example": {
+      "sessionId": "3754BA41DBBE",
+      "otp": "OTP"
+    }
+  },
+  "tags": [
+    "c2b",
+    "direct",
+    "payment",
+    "hellocash",
+    "otp",
+    "verify",
+    "post",
+    "api",
+    "checkout",
+    "sessionid"
+  ]
+}

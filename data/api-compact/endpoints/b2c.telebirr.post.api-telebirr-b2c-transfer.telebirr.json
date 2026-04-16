@@ -1,0 +1,32 @@
+{
+  "id": "b2c.telebirr.post.api-telebirr-b2c-transfer.telebirr",
+  "title": "C2B > B2C > Telebirr > Telebirr",
+  "method": "POST",
+  "path": "/api/Telebirr/b2c/transfer",
+  "provider": "telebirr",
+  "flow": "b2c",
+  "headers": [
+    "x-arifpay-key"
+  ],
+  "body": {
+    "templateId": null,
+    "required": [
+      "sessionId",
+      "phoneNumber"
+    ],
+    "example": {
+      "sessionId": "5D7FD029D8C2",
+      "phoneNumber": "251911476224"
+    }
+  },
+  "tags": [
+    "c2b",
+    "b2c",
+    "telebirr",
+    "post",
+    "api",
+    "transfer",
+    "sessionid",
+    "phonenumber"
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "id": "c2b-direct.general.post.api-checkout-session.create-session",
+  "title": "C2B > Direct Payment > Untitled > Create Session",
+  "method": "POST",
+  "path": "/api/checkout/session",
+  "provider": "general",
+  "flow": "c2b_direct",
+  "headers": [
+    "x-arifpay-key"
+  ],
+  "body": {
+    "templateId": "tpl-03"
+  },
+  "tags": [
+    "c2b",
+    "direct",
+    "payment",
+    "untitled",
+    "session",
+    "post",
+    "api",
+    "checkout",
+    "cancelurl",
+    "phone",
+    "email",
+    "nonce",
+    "successurl",
+    "errorurl",
+    "notifyurl",
+    "paymentmethods",
+    "expiredate",
+    "items",
+    "name",
+    "quantity"
+  ]
+}

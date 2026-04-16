@@ -1,0 +1,36 @@
+{
+  "id": "c2b-direct.awash.post.api-checkout-session.create-check-out-session-id",
+  "title": "C2B > Direct Payment > Awash > Create Check out session id",
+  "method": "POST",
+  "path": "/api/checkout/session",
+  "provider": "awash",
+  "flow": "c2b_direct",
+  "headers": [
+    "x-arifpay-key"
+  ],
+  "body": {
+    "templateId": "tpl-01"
+  },
+  "tags": [
+    "c2b",
+    "direct",
+    "payment",
+    "awash",
+    "check",
+    "out",
+    "session",
+    "post",
+    "api",
+    "checkout",
+    "cancelurl",
+    "phone",
+    "email",
+    "nonce",
+    "errorurl",
+    "notifyurl",
+    "successurl",
+    "paymentmethods",
+    "expiredate",
+    "items"
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "id": "c2b-direct.general.post.api-checkout-zamzam-verify-otp.verify-otp",
+  "title": "C2B > Direct Payment > Untitled > Verify otp",
+  "method": "POST",
+  "path": "/api/checkout/zamzam/verify/otp",
+  "provider": "general",
+  "flow": "c2b_direct",
+  "headers": [
+    "x-arifpay-key"
+  ],
+  "body": {
+    "templateId": null,
+    "required": [
+      "otp",
+      "accountNumber",
+      "sessionId"
+    ],
+    "example": {
+      "otp": "6063",
+      "accountNumber": "0026590620101",
+      "sessionId": "68CCC232D2A8"
+    }
+  },
+  "tags": [
+    "c2b",
+    "direct",
+    "payment",
+    "untitled",
+    "verify",
+    "otp",
+    "post",
+    "api",
+    "checkout",
+    "zamzam",
+    "accountnumber",
+    "sessionid"
+  ]
+}

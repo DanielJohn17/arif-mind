@@ -1,0 +1,36 @@
+{
+  "id": "c2b-direct.kacha.post.api-checkout-session.create-checkout-session",
+  "title": "C2B > Direct Payment > Kacha > Create Checkout Session",
+  "method": "POST",
+  "path": "/api/checkout/session",
+  "provider": "kacha",
+  "flow": "c2b_direct",
+  "headers": [
+    "x-arifpay-key"
+  ],
+  "body": {
+    "templateId": "tpl-03"
+  },
+  "tags": [
+    "c2b",
+    "direct",
+    "payment",
+    "kacha",
+    "checkout",
+    "session",
+    "post",
+    "api",
+    "cancelurl",
+    "phone",
+    "email",
+    "nonce",
+    "successurl",
+    "errorurl",
+    "notifyurl",
+    "paymentmethods",
+    "expiredate",
+    "items",
+    "name",
+    "quantity"
+  ]
+}

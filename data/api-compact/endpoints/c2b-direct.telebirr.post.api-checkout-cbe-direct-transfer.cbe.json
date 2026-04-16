@@ -1,0 +1,35 @@
+{
+  "id": "c2b-direct.telebirr.post.api-checkout-cbe-direct-transfer.cbe",
+  "title": "C2B > Direct Payment > Telebirr > CBE > CBE",
+  "method": "POST",
+  "path": "/api/checkout/cbe/direct/transfer",
+  "provider": "telebirr",
+  "flow": "c2b_direct",
+  "headers": [
+    "x-arifpay-key"
+  ],
+  "body": {
+    "templateId": null,
+    "required": [
+      "sessionId",
+      "phoneNumber"
+    ],
+    "example": {
+      "sessionId": "C367E444DFD44D",
+      "phoneNumber": "251954926213"
+    }
+  },
+  "tags": [
+    "c2b",
+    "direct",
+    "payment",
+    "telebirr",
+    "cbe",
+    "post",
+    "api",
+    "checkout",
+    "transfer",
+    "sessionid",
+    "phonenumber"
+  ]
+}

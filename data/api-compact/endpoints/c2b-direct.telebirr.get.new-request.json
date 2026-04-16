@@ -1,0 +1,18 @@
+{
+  "id": "c2b-direct.telebirr.get.new-request",
+  "title": "C2B > Direct Payment > Telebirr > CBE > New Request",
+  "method": "GET",
+  "path": "",
+  "provider": "telebirr",
+  "flow": "c2b_direct",
+  "headers": [],
+  "body": null,
+  "tags": [
+    "c2b",
+    "direct",
+    "payment",
+    "telebirr",
+    "cbe",
+    "get"
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "id": "c2b-direct.awash.post.api-checkout-awash-direct-verifyotp.awash-otp-verify",
+  "title": "C2B > Direct Payment > Awash > Awash OTP Verify",
+  "method": "POST",
+  "path": "/api/checkout/awash/direct/verifyOTP",
+  "provider": "awash",
+  "flow": "c2b_direct",
+  "headers": [
+    "x-arifpay-key"
+  ],
+  "body": {
+    "templateId": null,
+    "required": [
+      "sessionId",
+      "otp"
+    ],
+    "aliases": {
+      "sessionId": [
+        "SessionId"
+      ]
+    },
+    "example": {
+      "sessionId": "3754BA41DBBE",
+      "otp": "OTP"
+    }
+  },
+  "tags": [
+    "c2b",
+    "direct",
+    "payment",
+    "awash",
+    "otp",
+    "verify",
+    "post",
+    "api",
+    "checkout",
+    "verifyotp",
+    "sessionid"
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "id": "c2b-direct.amole.post.api-checkout-amole-direct-verifyotp.amole-otp-verify",
+  "title": "C2B > Direct Payment > Amole > Amole OTP Verify",
+  "method": "POST",
+  "path": "/api/checkout/amole/direct/verifyOTP",
+  "provider": "amole",
+  "flow": "c2b_direct",
+  "headers": [
+    "x-arifpay-key"
+  ],
+  "body": {
+    "templateId": null,
+    "required": [
+      "sessionId",
+      "otp"
+    ],
+    "aliases": {
+      "sessionId": [
+        "SessionId"
+      ]
+    },
+    "example": {
+      "sessionId": "3754BA41DBBE",
+      "otp": "OTP"
+    }
+  },
+  "tags": [
+    "c2b",
+    "direct",
+    "payment",
+    "amole",
+    "otp",
+    "verify",
+    "post",
+    "api",
+    "checkout",
+    "verifyotp",
+    "sessionid"
+  ]
+}

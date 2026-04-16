@@ -1,0 +1,34 @@
+{
+  "id": "c2b-direct.binget.post.api-checkout-binget-initiate.binget",
+  "title": "C2B > Direct Payment > Binget > Binget",
+  "method": "POST",
+  "path": "/api/checkout/binget/initiate",
+  "provider": "binget",
+  "flow": "c2b_direct",
+  "headers": [
+    "x-arifpay-key"
+  ],
+  "body": {
+    "templateId": null,
+    "required": [
+      "sessionId",
+      "phoneNumber"
+    ],
+    "example": {
+      "sessionId": "3754BA41DBBE",
+      "phoneNumber": "251932155086"
+    }
+  },
+  "tags": [
+    "c2b",
+    "direct",
+    "payment",
+    "binget",
+    "post",
+    "api",
+    "checkout",
+    "initiate",
+    "sessionid",
+    "phonenumber"
+  ]
+}

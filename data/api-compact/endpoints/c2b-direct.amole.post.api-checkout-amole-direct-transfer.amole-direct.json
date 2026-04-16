@@ -1,0 +1,34 @@
+{
+  "id": "c2b-direct.amole.post.api-checkout-amole-direct-transfer.amole-direct",
+  "title": "C2B > Direct Payment > Amole > Amole direct",
+  "method": "POST",
+  "path": "/api/checkout/amole/direct/transfer",
+  "provider": "amole",
+  "flow": "c2b_direct",
+  "headers": [
+    "x-arifpay-key"
+  ],
+  "body": {
+    "templateId": null,
+    "required": [
+      "sessionId",
+      "phoneNumber"
+    ],
+    "example": {
+      "sessionId": "3754BA41DBBE",
+      "phoneNumber": "251932155086"
+    }
+  },
+  "tags": [
+    "c2b",
+    "direct",
+    "payment",
+    "amole",
+    "post",
+    "api",
+    "checkout",
+    "transfer",
+    "sessionid",
+    "phonenumber"
+  ]
+}

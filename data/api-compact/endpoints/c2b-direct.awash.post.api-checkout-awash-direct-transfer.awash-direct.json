@@ -1,0 +1,42 @@
+{
+  "id": "c2b-direct.awash.post.api-checkout-awash-direct-transfer.awash-direct",
+  "title": "C2B > Direct Payment > Awash > Awash direct",
+  "method": "POST",
+  "path": "/api/checkout/awash/direct/transfer",
+  "provider": "awash",
+  "flow": "c2b_direct",
+  "headers": [
+    "x-arifpay-key"
+  ],
+  "body": {
+    "templateId": null,
+    "required": [
+      "sessionId",
+      "phoneNumber"
+    ],
+    "aliases": {
+      "sessionId": [
+        "Sessionid"
+      ],
+      "phoneNumber": [
+        "Phonenumber"
+      ]
+    },
+    "example": {
+      "sessionId": "3754BA41DBBE",
+      "phoneNumber": "251932155086"
+    }
+  },
+  "tags": [
+    "c2b",
+    "direct",
+    "payment",
+    "awash",
+    "post",
+    "api",
+    "checkout",
+    "transfer",
+    "sessionid",
+    "phonenumber"
+  ]
+}

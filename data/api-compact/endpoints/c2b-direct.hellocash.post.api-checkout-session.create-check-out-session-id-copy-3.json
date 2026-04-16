@@ -1,0 +1,36 @@
+{
+  "id": "c2b-direct.hellocash.post.api-checkout-session.create-check-out-session-id-copy-3",
+  "title": "C2B > Direct Payment > HelloCash > Create Check out session id Copy 3",
+  "method": "POST",
+  "path": "/api/checkout/session",
+  "provider": "hellocash",
+  "flow": "c2b_direct",
+  "headers": [
+    "x-arifpay-key"
+  ],
+  "body": {
+    "templateId": "tpl-02"
+  },
+  "tags": [
+    "c2b",
+    "direct",
+    "payment",
+    "hellocash",
+    "check",
+    "out",
+    "session",
+    "post",
+    "api",
+    "checkout",
+    "cancelurl",
+    "lang",
+    "phone",
+    "email",
+    "nonce",
+    "errorurl",
+    "notifyurl",
+    "successurl",
+    "paymentmethods",
+    "expiredate"
+  ]
+}

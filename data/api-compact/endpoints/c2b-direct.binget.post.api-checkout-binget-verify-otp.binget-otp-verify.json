@@ -1,0 +1,34 @@
+{
+  "id": "c2b-direct.binget.post.api-checkout-binget-verify-otp.binget-otp-verify",
+  "title": "C2B > Direct Payment > Binget > Binget OTP Verify",
+  "method": "POST",
+  "path": "/api/checkout/binget/verify-otp",
+  "provider": "binget",
+  "flow": "c2b_direct",
+  "headers": [
+    "x-arifpay-key"
+  ],
+  "body": {
+    "templateId": null,
+    "required": [
+      "sessionId",
+      "otp"
+    ],
+    "example": {
+      "sessionId": "3754BA41DBBE",
+      "otp": "OTP"
+    }
+  },
+  "tags": [
+    "c2b",
+    "direct",
+    "payment",
+    "binget",
+    "otp",
+    "verify",
+    "post",
+    "api",
+    "checkout",
+    "sessionid"
+  ]
+}

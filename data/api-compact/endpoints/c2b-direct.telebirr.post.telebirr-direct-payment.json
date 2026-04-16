@@ -1,0 +1,94 @@
+{
+  "id": "c2b-direct.telebirr.post.telebirr-direct-payment",
+  "title": "C2B > Direct Payment > Telebirr > Telebirr Direct Payment",
+  "method": "POST",
+  "path": "",
+  "provider": "telebirr",
+  "flow": "c2b_direct",
+  "headers": [
+    "x-arifpay-key"
+  ],
+  "body": {
+    "templateId": null,
+    "required": [
+      "cancelUrl",
+      "phone",
+      "email",
+      "nonce",
+      "errorUrl",
+      "notifyUrl",
+      "successUrl",
+      "paymentMethods",
+      "expireDate",
+      "items",
+      "name",
+      "quantity",
+      "price",
+      "description",
+      "image",
+      "beneficiaries",
+      "accountNumber",
+      "bank",
+      "amount",
+      "lang"
+    ],
+    "example": {
+      "cancelUrl": "https://example.com",
+      "phone": "251900000000",
+      "email": "user@example.com",
+      "nonce": "random-nonce",
+      "errorUrl": "https://example.com",
+      "notifyUrl": "https://example.com",
+      "successUrl": "https://example.com",
+      "paymentMethods": [
+        "METHOD"
+      ],
+      "expireDate": "2026-01-01T00:00:00Z",
+      "items": [
+        {
+          "name": "Product",
+          "quantity": 1,
+          "price": 1
+        }
+      ],
+      "name": "value",
+      "quantity": 1,
+      "price": 1,
+      "description": "value",
+      "image": "value",
+      "beneficiaries": [
+        {
+          "accountNumber": "0000000000000",
+          "bank": "AWINETAA",
+          "amount": 1
+        }
+      ],
+      "accountNumber": "0000000000000",
+      "bank": "value",
+      "amount": 1,
+      "lang": "EN"
+    }
+  },
+  "tags": [
+    "c2b",
+    "direct",
+    "payment",
+    "telebirr",
+    "post",
+    "cancelurl",
+    "phone",
+    "email",
+    "nonce",
+    "errorurl",
+    "notifyurl",
+    "successurl",
+    "paymentmethods",
+    "expiredate",
+    "items",
+    "name",
+    "quantity",
+    "price",
+    "description",
+    "image"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "id": "c2b-direct.yaya.post.api-checkout-yaya-transfer.yaya",
+  "title": "C2B > Direct Payment > Yaya > Yaya",
+  "method": "POST",
+  "path": "/api/checkout/yaya/transfer",
+  "provider": "yaya",
+  "flow": "c2b_direct",
+  "headers": [
+    "x-arifpay-key"
+  ],
+  "body": {
+    "templateId": null,
+    "required": [
+      "sessionId",
+      "phoneNumber"
+    ],
+    "example": {
+      "sessionId": "3754BA41DBBE",
+      "phoneNumber": "251932155086"
+    }
+  },
+  "tags": [
+    "c2b",
+    "direct",
+    "payment",
+    "yaya",
+    "post",
+    "api",
+    "checkout",
+    "transfer",
+    "sessionid",
+    "phonenumber"
+  ]
+}

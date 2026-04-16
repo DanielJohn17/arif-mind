@@ -1,0 +1,93 @@
+{
+  "id": "c2b-direct.general.post.localhost-2000-api-checkout-zamzam-direct-transfer.direct-transfer",
+  "title": "C2B > Direct Payment > Untitled > Direct Transfer",
+  "method": "POST",
+  "path": "/localhost:2000/api/checkout/zamzam/direct/transfer",
+  "provider": "general",
+  "flow": "c2b_direct",
+  "headers": [
+    "x-arifpay-key"
+  ],
+  "body": {
+    "templateId": null,
+    "required": [
+      "cancelUrl",
+      "phone",
+      "email",
+      "nonce",
+      "successUrl",
+      "errorUrl",
+      "notifyUrl",
+      "paymentMethods",
+      "expireDate",
+      "items",
+      "name",
+      "quantity",
+      "price",
+      "description",
+      "beneficiaries",
+      "accountNumber",
+      "bank",
+      "amount",
+      "lang"
+    ],
+    "example": {
+      "cancelUrl": "https://example.com",
+      "phone": "251983832880",
+      "email": "telebinTest@gmail.com",
+      "nonce": "AAAa123asds",
+      "successUrl": "https://example.com/success",
+      "errorUrl": "https://example.com/error",
+      "notifyUrl": "https://example.com/notify",
+      "paymentMethods": [
+        "ZAMZAM"
+      ],
+      "expireDate": "2023-12-31T23:59:59Z",
+      "items": [
+        {
+          "name": "Product 1",
+          "quantity": 1,
+          "price": 1,
+          "description": "Sample product"
+        }
+      ],
+      "name": "value",
+      "quantity": 1,
+      "price": 1,
+      "description": "value",
+      "beneficiaries": [
+        {
+          "accountNumber": "1000000000000",
+          "bank": "AWINETAA",
+          "amount": 1
+        }
+      ],
+      "accountNumber": "0026590620101",
+      "bank": "value",
+      "amount": 1,
+      "lang": "EN"
+    }
+  },
+  "tags": [
+    "c2b",
+    "direct",
+    "payment",
+    "untitled",
+    "transfer",
+    "post",
+    "localhost",
+    "2000",
+    "api",
+    "checkout",
+    "zamzam",
+    "cancelurl",
+    "phone",
+    "email",
+    "nonce",
+    "successurl",
+    "errorurl",
+    "notifyurl",
+    "paymentmethods",
+    "expiredate"
+  ]
+}

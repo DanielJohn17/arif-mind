@@ -1,0 +1,35 @@
+{
+  "id": "c2b-direct.kacha.post.api-checkout-kacha-transfer.transfer-session",
+  "title": "C2B > Direct Payment > Kacha > Transfer Session",
+  "method": "POST",
+  "path": "/api/checkout/kacha/transfer",
+  "provider": "kacha",
+  "flow": "c2b_direct",
+  "headers": [
+    "x-arifpay-key"
+  ],
+  "body": {
+    "templateId": null,
+    "required": [
+      "accountNumber",
+      "sessionId"
+    ],
+    "example": {
+      "accountNumber": "0026590620101",
+      "sessionId": "01130346DC67"
+    }
+  },
+  "tags": [
+    "c2b",
+    "direct",
+    "payment",
+    "kacha",
+    "transfer",
+    "session",
+    "post",
+    "api",
+    "checkout",
+    "accountnumber",
+    "sessionid"
+  ]
+}

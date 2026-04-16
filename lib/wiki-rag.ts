@@ -1,41 +1,90 @@
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+
 import { GoogleGenAI } from "@google/genai";
 
-import apiCollection from "@/data/api.json";
 import type { WikiAnswerSource, WikiAskResponse } from "@/lib/types";
 
 const DEFAULT_MODEL = "gemini-2.5-flash";
+const COMPACT_INDEX_PATH = path.join(process.cwd(), "data", "api-compact", "index.json");
+const TEMPLATE_PATH = path.join(
+  process.cwd(),
+  "data",
+  "api-compact",
+  "shared",
+  "templates.json"
+);
+const MAX_CANDIDATES = 6;
+const MAX_CONTEXT_ENDPOINTS = 3;
 
 const SYSTEM_PROMPT = [
   "You are ArifMind, the ArifPay API assistant.",
-  "Use only the API collection provided in the context.",
-  "Do not invent endpoints, fields, or behavior beyond that collection.",
-  "If the answer is not in the collection, say you do not have it.",
+  "Use only the compact API endpoint context provided below.",
+  "Do not invent endpoints, fields, or behavior beyond that context.",
+  "If the answer is not in the context, say you do not have it.",
   "Do not include any links or URLs in the response.",
   "Respond with helpful, step-by-step guidance and include code snippets.",
-  "If you include bash commands, format them in fenced ```bash code blocks so they look like terminal output and remain easy to copy.",
+  "If you include bash commands, format them in fenced ```bash code blocks.",
 ].join("\n");
 
-type ApiHeader = { key?: string; value?: string };
-type ApiUrl = { raw?: string; protocol?: string; host?: string[]; path?: string[] };
-type ApiRequest = {
-  method?: string;
-  header?: ApiHeader[];
-  body?: { mode?: string; raw?: string };
-  url?: ApiUrl;
-};
-type ApiItem = { name?: string; item?: ApiItem[]; request?: ApiRequest };
-
-type ApiEndpoint = {
+type CompactIndexItem = {
   id: string;
-  name: string;
+  title: string;
   method: string;
-  url: string;
-  displayUrl: string;
-  headers: ApiHeader[];
-  bodyRaw: string;
-  path: string[];
-  score: number;
+  path: string;
+  provider: string;
+  flow: string;
+  endpointFile: string;
+  bodyKeys: string[];
+  templateId: string | null;
+  tags: string[];
 };
+
+type CompactIndex = {
+  version: number;
+  endpointCount: number;
+  templateCount: number;
+  items: CompactIndexItem[];
+};
+
+type EndpointBody = {
+  templateId?: string | null;
+  required?: string[];
+  aliases?: Record<string, string[]>;
+  example?: unknown;
+};
+
+type CompactEndpoint = {
+  id: string;
+  title: string;
+  method: string;
+  path: string;
+  provider: string;
+  flow: string;
+  headers: string[];
+  body: EndpointBody | null;
+  tags: string[];
+};
+
+type CompactTemplate = {
+  id: string;
+  method: string;
+  path: string;
+  required: string[];
+  aliases: Record<string, string[]>;
+  example: unknown;
+};
+
+type TemplateFile = {
+  version: number;
+  items: CompactTemplate[];
+};
+
+type ScoredCandidate = CompactIndexItem & { score: number };
+
+let cachedIndex: CompactIndex | null = null;
+let cachedTemplateMap: Map<string, CompactTemplate> | null = null;
+const endpointCache = new Map<string, CompactEndpoint>();
 
 function getRequiredEnv(name: string) {
   const value = process.env[name];
@@ -50,7 +99,10 @@ function getRequiredEnv(name: string) {
 const genAI = new GoogleGenAI({ apiKey: getRequiredEnv("GEMINI_API_KEY") });
 const modelName = process.env.GEMINI_WIKI_MODEL || DEFAULT_MODEL;
 
-let cachedEndpoints: ApiEndpoint[] | null = null;
+async function readJsonFile<T>(filePath: string): Promise<T> {
+  const raw = await readFile(filePath, "utf8");
+  return JSON.parse(raw) as T;
+}
 
 function normalizeText(value: string) {
   return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
@@ -62,99 +114,38 @@ function tokenize(value: string) {
     .filter((token) => token.length > 2);
 }
 
-function buildUrl(url?: ApiUrl) {
-  if (!url) {
-    return "";
+async function getCompactIndex() {
+  if (cachedIndex) {
+    return cachedIndex;
   }
 
-  if (url.raw) {
-    return url.raw;
-  }
-
-  const protocol = url.protocol ? `${url.protocol}://` : "";
-  const host = url.host?.join(".") ?? "";
-  const path = url.path?.join("/") ?? "";
-  const slash = host && path ? "/" : "";
-
-  return `${protocol}${host}${slash}${path}`;
+  cachedIndex = await readJsonFile<CompactIndex>(COMPACT_INDEX_PATH);
+  return cachedIndex;
 }
 
-function buildDisplayUrl(url?: ApiUrl) {
-  if (!url) {
-    return "";
+async function getTemplateMap() {
+  if (cachedTemplateMap) {
+    return cachedTemplateMap;
   }
 
-  const raw = url.raw || "";
-
-  if (raw) {
-    if (raw.includes("BASE_URL")) {
-      return raw.replace(/^BASE_URL/, "").trim() || raw;
-    }
-
-    const withoutProtocol = raw.split("://")[1];
-    if (withoutProtocol) {
-      const slashIndex = withoutProtocol.indexOf("/");
-      return slashIndex >= 0 ? withoutProtocol.slice(slashIndex) : raw;
-    }
-
-    return raw;
-  }
-
-  if (url.path && url.path.length > 0) {
-    return `/${url.path.join("/")}`;
-  }
-
-  return "";
+  const file = await readJsonFile<TemplateFile>(TEMPLATE_PATH);
+  cachedTemplateMap = new Map(file.items.map((template) => [template.id, template]));
+  return cachedTemplateMap;
 }
 
-function flattenItems(items: ApiItem[], trail: string[] = []) {
-  const endpoints: ApiEndpoint[] = [];
+async function getEndpoint(item: CompactIndexItem) {
+  const fullPath = path.join(process.cwd(), item.endpointFile);
 
-  for (const item of items) {
-    const name = item.name || "Untitled";
-    const nextTrail = [...trail, name];
-
-    if (item.item && item.item.length > 0) {
-      endpoints.push(...flattenItems(item.item, nextTrail));
-      continue;
-    }
-
-    if (!item.request) {
-      continue;
-    }
-
-    const url = buildUrl(item.request.url);
-    const displayUrl = buildDisplayUrl(item.request.url);
-    const bodyRaw = item.request.body?.raw?.replace(/\r\n/g, "\n") ?? "";
-    const method = item.request.method || "";
-
-    endpoints.push({
-      id: `${endpoints.length + 1}`,
-      name,
-      method,
-      url,
-      displayUrl,
-      headers: item.request.header ?? [],
-      bodyRaw,
-      path: trail,
-      score: 0,
-    });
+  if (endpointCache.has(fullPath)) {
+    return endpointCache.get(fullPath)!;
   }
 
-  return endpoints;
+  const endpoint = await readJsonFile<CompactEndpoint>(fullPath);
+  endpointCache.set(fullPath, endpoint);
+  return endpoint;
 }
 
-function getEndpoints() {
-  if (cachedEndpoints) {
-    return cachedEndpoints;
-  }
-
-  const rootItems = (apiCollection as { item?: ApiItem[] }).item ?? [];
-  cachedEndpoints = flattenItems(rootItems);
-  return cachedEndpoints;
-}
-
-function scoreEndpoint(question: string, endpoint: ApiEndpoint) {
+function scoreCandidate(question: string, item: CompactIndexItem) {
   const tokens = tokenize(question);
 
   if (tokens.length === 0) {
@@ -163,99 +154,96 @@ function scoreEndpoint(question: string, endpoint: ApiEndpoint) {
 
   const haystack = normalizeText(
     [
-      endpoint.name,
-      endpoint.method,
-      endpoint.url,
-      endpoint.path.join(" "),
-      endpoint.bodyRaw,
+      item.title,
+      item.method,
+      item.path,
+      item.provider,
+      item.flow,
+      item.tags.join(" "),
+      item.bodyKeys.join(" "),
     ].join(" ")
   );
 
-  return tokens.reduce((score, token) => {
-    return score + (haystack.includes(token) ? 1 : 0);
-  }, 0);
+  return tokens.reduce((score, token) => score + (haystack.includes(token) ? 1 : 0), 0);
 }
 
-function buildSourceList(endpoints: ApiEndpoint[], maxScore: number): WikiAnswerSource[] {
-  return endpoints.map((endpoint, index) => ({
+function buildSourceList(candidates: ScoredCandidate[], maxScore: number): WikiAnswerSource[] {
+  return candidates.map((candidate, index) => ({
     id: `${index + 1}`,
-    title: endpoint.path.length ? `${endpoint.path.join(" > ")} > ${endpoint.name}` : endpoint.name,
+    title: candidate.title,
     sourceUrl: "",
-    folderPath: "data/api.json",
-    score: maxScore ? endpoint.score / maxScore : undefined,
+    folderPath: candidate.endpointFile,
+    score: maxScore > 0 ? candidate.score / maxScore : undefined,
   }));
 }
 
-function formatEndpointSnippet(endpoint: ApiEndpoint) {
-  const headerLines = endpoint.headers
-    .filter((header) => header.key && header.value)
-    .map((header) => `${header.key}: ${header.value}`);
+function formatJson(value: unknown) {
+  return JSON.stringify(value, null, 2);
+}
 
-  const lines = [
-    `${endpoint.method} ${endpoint.displayUrl || endpoint.url}`,
-    headerLines.length ? `Headers: ${headerLines.join(", ")}` : "Headers: (none)",
-  ];
+function formatEndpointSnippet(endpoint: CompactEndpoint, template?: CompactTemplate | null) {
+  const lines = [`${endpoint.method} ${endpoint.path || "(missing path)"}`];
 
-  if (endpoint.bodyRaw.trim()) {
-    lines.push("Body:");
+  if (endpoint.headers.length > 0) {
+    lines.push(`Headers: ${endpoint.headers.join(", ")}`);
+  } else {
+    lines.push("Headers: (none)");
+  }
+
+  const body = endpoint.body;
+  if (!body) {
+    lines.push("Body: (none)");
+    return lines.join("\n");
+  }
+
+  const required = body.required ?? template?.required ?? [];
+  lines.push(required.length > 0 ? `Required fields: ${required.join(", ")}` : "Required fields: (none)");
+
+  const aliases = body.aliases ?? template?.aliases ?? {};
+  const aliasPairs = Object.entries(aliases)
+    .filter(([, values]) => values.length > 0)
+    .map(([canonical, values]) => `${canonical}: ${values.join(" | ")}`);
+
+  if (aliasPairs.length > 0) {
+    lines.push(`Aliases: ${aliasPairs.join(", ")}`);
+  }
+
+  const example = body.example ?? template?.example;
+  if (example) {
+    lines.push("Body example:");
     lines.push("```json");
-    lines.push(endpoint.bodyRaw.trim());
+    lines.push(formatJson(example));
     lines.push("```");
   }
 
   return lines.join("\n");
 }
 
-function buildFallbackAnswer(question: string, endpoints: ApiEndpoint[]) {
-  const header = `Question: ${question}`;
-  const intro =
-    "Here are the closest matching endpoints from the API collection (data/api.json):";
-  const snippets = endpoints.map((endpoint) => formatEndpointSnippet(endpoint));
+function buildPrompt(
+  question: string,
+  contexts: Array<{ endpoint: CompactEndpoint; template: CompactTemplate | null }>
+) {
+  const context = contexts
+    .map(({ endpoint, template }) => {
+      const sectionLines = [
+        `Title: ${endpoint.title}`,
+        `Provider: ${endpoint.provider}`,
+        `Flow: ${endpoint.flow}`,
+        formatEndpointSnippet(endpoint, template),
+      ];
 
-  return [header, "", intro, "", ...snippets].join("\n");
-}
+      if (template) {
+        sectionLines.push(`Shared Template ID: ${template.id}`);
+      }
 
-function ensureCodeSnippet(answer: string, endpoints: ApiEndpoint[]) {
-  const fenced = answer.includes("```");
-  const sanitized = answer
-    .replace(/\bhttp:\/\/\S+/gi, "[link removed]")
-    .replace(/\bhttps:\/\/\S+/gi, "[link removed]")
-    .replace(/\bBASE_URL\b/gi, "[BASE_URL]");
-
-  if (fenced) {
-    return sanitized.replace(/```(\s*)bash/gi, "```bash");
-  }
-
-  const primary = endpoints[0];
-  const snippet = primary ? formatEndpointSnippet(primary) : "";
-
-  return [sanitized.trim(), "", "Example request:", snippet].filter(Boolean).join("\n");
-}
-
-function buildPrompt(question: string, endpoints: ApiEndpoint[]) {
-  const context = endpoints
-    .map((endpoint) => {
-      const pathLabel = endpoint.path.length ? endpoint.path.join(" > ") : "Root";
-      return [
-        `Name: ${endpoint.name}`,
-        `Path: ${pathLabel}`,
-        `Method: ${endpoint.method}`,
-        `URL: ${endpoint.url}`,
-        endpoint.headers.length
-          ? `Headers: ${endpoint.headers
-              .filter((header) => header.key && header.value)
-              .map((header) => `${header.key}: ${header.value}`)
-              .join(", ")}`
-          : "Headers: (none)",
-        endpoint.bodyRaw.trim() ? `Body: ${endpoint.bodyRaw.trim()}` : "Body: (none)",
-      ].join("\n");
+      return sectionLines.join("\n");
     })
     .join("\n\n---\n\n");
 
   return [
     SYSTEM_PROMPT,
     "",
-    "API Collection Context:",
+    "API Compact Context:",
     context,
     "",
     `Question: ${question}`,
@@ -263,51 +251,91 @@ function buildPrompt(question: string, endpoints: ApiEndpoint[]) {
   ].join("\n");
 }
 
-function buildNoMatchAnswer(question: string) {
-  const rootItems = (apiCollection as { item?: ApiItem[] }).item ?? [];
-  const suggestions = rootItems
-    .map((item) => item.name)
-    .filter(Boolean)
-    .slice(0, 6)
-    .join(", ");
+function sanitizeAnswer(answer: string) {
+  return answer
+    .replace(/\bhttp:\/\/\S+/gi, "[link removed]")
+    .replace(/\bhttps:\/\/\S+/gi, "[link removed]")
+    .replace(/\bBASE_URL\b/gi, "[BASE_URL]");
+}
+
+function ensureCodeSnippet(
+  answer: string,
+  contexts: Array<{ endpoint: CompactEndpoint; template: CompactTemplate | null }>
+) {
+  const sanitized = sanitizeAnswer(answer).trim();
+
+  if (sanitized.includes("```")) {
+    return sanitized.replace(/```(\s*)bash/gi, "```bash");
+  }
+
+  const primary = contexts[0];
+  const snippet = primary
+    ? formatEndpointSnippet(primary.endpoint, primary.template)
+    : "No endpoint context available.";
+
+  return [sanitized, "", "Example request:", snippet].join("\n");
+}
+
+function buildNoMatchAnswer(question: string, index: CompactIndex) {
+  const providers = Array.from(new Set(index.items.map((item) => item.provider))).slice(0, 8);
 
   return [
-    `I could not find that in data/api.json for: ${question}`,
-    suggestions ? `Try asking about: ${suggestions}.` : "Try asking about a specific payment method.",
+    `I could not find that in data/api-compact/index.json for: ${question}`,
+    providers.length > 0
+      ? `Try asking about one of these providers: ${providers.join(", ")}.`
+      : "Try asking about a specific payment method or transfer flow.",
+  ].join("\n");
+}
+
+function buildFallbackAnswer(
+  question: string,
+  contexts: Array<{ endpoint: CompactEndpoint; template: CompactTemplate | null }>
+) {
+  const snippets = contexts.map(({ endpoint, template }) => formatEndpointSnippet(endpoint, template));
+
+  return [
+    `Question: ${question}`,
+    "",
+    "Here are the closest matching endpoints from data/api-compact:",
+    "",
+    ...snippets,
   ].join("\n");
 }
 
 async function generateApiAnswer(question: string): Promise<WikiAskResponse> {
-  const endpoints = getEndpoints();
-  const scored = endpoints
-    .map((endpoint) => ({
-      ...endpoint,
-      score: scoreEndpoint(question, endpoint),
-    }))
-    .filter((endpoint) => endpoint.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 6);
+  const index = await getCompactIndex();
+  const templateMap = await getTemplateMap();
 
-  if (scored.length === 0) {
-    return { answer: buildNoMatchAnswer(question), sources: [] };
+  const candidates = index.items
+    .map((item) => ({ ...item, score: scoreCandidate(question, item) }))
+    .filter((item) => item.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, MAX_CANDIDATES);
+
+  if (candidates.length === 0) {
+    return { answer: buildNoMatchAnswer(question, index), sources: [] };
   }
 
-  const maxScore = scored[0]?.score ?? 0;
-  const sources = buildSourceList(scored, maxScore);
-  const prompt = buildPrompt(question, scored);
+  const contexts = await Promise.all(
+    candidates.slice(0, MAX_CONTEXT_ENDPOINTS).map(async (candidate) => {
+      const endpoint = await getEndpoint(candidate);
+      const templateId = endpoint.body?.templateId ?? candidate.templateId;
+      const template = templateId ? templateMap.get(templateId) ?? null : null;
 
-  const result = await genAI.models.generateContent({
-    model: modelName,
-    contents: prompt,
-  });
+      return { endpoint, template };
+    })
+  );
 
-  const answer = (result as { text?: string }).text ?? "";
+  const prompt = buildPrompt(question, contexts);
+  const result = await genAI.models.generateContent({ model: modelName, contents: prompt });
+  const generatedText = (result as { text?: string }).text ?? "";
+  const maxScore = candidates[0]?.score ?? 0;
 
   return {
-    answer: answer.trim()
-      ? ensureCodeSnippet(answer.trim(), scored)
-      : buildFallbackAnswer(question, scored),
-    sources,
+    answer: generatedText.trim()
+      ? ensureCodeSnippet(generatedText, contexts)
+      : buildFallbackAnswer(question, contexts),
+    sources: buildSourceList(candidates, maxScore),
   };
 }
 
@@ -318,8 +346,5 @@ export async function searchWikiKnowledgeBase(question: string) {
 
 export async function answerWikiQuestion(question: string): Promise<WikiAskResponse> {
   const result = await generateApiAnswer(question);
-  return {
-    ...result,
-    question: question,
-  };
+  return { ...result, question };
 }

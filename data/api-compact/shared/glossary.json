@@ -1,0 +1,20 @@
+{
+  "canonicalKeys": {
+    "sessionId": [
+      "SessionId",
+      "Sessionid",
+      "sessionid"
+    ],
+    "phoneNumber": [
+      "Phonenumber",
+      "phonenumber"
+    ],
+    "otp": [
+      "OTP"
+    ]
+  },
+  "notes": [
+    "Prefer canonical keys in prompts and examples to reduce ambiguity.",
+    "Preserve provider specific casing only when exact request examples are required."
+  ]
+}

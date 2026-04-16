@@ -1,0 +1,95 @@
+{
+  "id": "c2b-direct.general.post.api-mpesa-wallet-tobank-transfer.external-transfer-wallet-to-bank",
+  "title": "C2B > Direct Payment > Untitled > External Transfer wallet To Bank",
+  "method": "POST",
+  "path": "/api/Mpesa/wallet-tobank/transfer",
+  "provider": "general",
+  "flow": "c2b_direct",
+  "headers": [
+    "x-arifpay-key"
+  ],
+  "body": {
+    "templateId": null,
+    "required": [
+      "cancelUrl",
+      "phone",
+      "email",
+      "nonce",
+      "successUrl",
+      "errorUrl",
+      "notifyUrl",
+      "paymentMethods",
+      "expireDate",
+      "items",
+      "name",
+      "quantity",
+      "price",
+      "description",
+      "beneficiaries",
+      "accountNumber",
+      "bank",
+      "amount",
+      "lang",
+      "shortCodes"
+    ],
+    "example": {
+      "cancelUrl": "https://example.com",
+      "phone": "251983832880",
+      "email": "telebinTest@gmail.com",
+      "nonce": "AAAa13asajxcxdsfsdfsdsads",
+      "successUrl": "https://example.com/success",
+      "errorUrl": "https://example.com/error",
+      "notifyUrl": "https://6628969e54afcabd07363a69.mockapi.io/notification/Test",
+      "paymentMethods": [
+        "ZAMZAM"
+      ],
+      "expireDate": "2029-12-31T23:59:59Z",
+      "items": [
+        {
+          "name": "Product 1",
+          "quantity": 1,
+          "price": 5,
+          "description": "Sample product"
+        }
+      ],
+      "name": "value",
+      "quantity": 1,
+      "price": 1,
+      "description": "value",
+      "beneficiaries": [
+        {
+          "accountNumber": "1000000000000",
+          "bank": "AWINETAA",
+          "amount": 5
+        }
+      ],
+      "accountNumber": "1000257910818",
+      "bank": "value",
+      "amount": 1,
+      "lang": "EN",
+      "shortCodes": "CBE"
+    }
+  },
+  "tags": [
+    "c2b",
+    "direct",
+    "payment",
+    "untitled",
+    "external",
+    "transfer",
+    "wallet",
+    "bank",
+    "post",
+    "api",
+    "mpesa",
+    "tobank",
+    "cancelurl",
+    "phone",
+    "email",
+    "nonce",
+    "successurl",
+    "errorurl",
+    "notifyurl",
+    "paymentmethods"
+  ]
+}
