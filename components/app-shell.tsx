@@ -32,7 +32,7 @@ export function AppShell({
 
   return (
     <div className="min-h-screen">
-      <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-6 px-4 py-4 md:px-6 lg:flex-row lg:px-8">
+      <div className="flex min-h-screen w-full flex-col gap-6 px-4 py-4 md:px-6 lg:flex-row lg:px-8">
         <aside className="w-full lg:sticky lg:top-4 lg:h-[calc(100vh-2rem)] lg:w-72">
           <Card className="h-full border-white/50 bg-sidebar text-sidebar-foreground shadow-2xl shadow-black/10">
             <CardContent className="flex h-full flex-col gap-6 p-5">

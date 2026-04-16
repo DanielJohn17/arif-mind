@@ -45,6 +45,20 @@ npm run dev
 
 If the Supabase env vars are missing, ArifMind still runs in demo mode using seeded in-app mock data so the prototype remains reviewable.
 
+### Optional AI wiki assistant env
+To use the Gemini File Search assistant inside the wiki, also set:
+
+```bash
+GEMINI_API_KEY=...
+```
+
+Optional overrides:
+
+```bash
+GEMINI_FILE_SEARCH_STORE=arifmind-docs
+GEMINI_WIKI_MODEL=gemini-2.5-flash
+```
+
 ## Supabase setup
 Enable **Email** auth (email + password) in your Supabase project settings.
 
@@ -85,3 +99,20 @@ The security model is based on three roles in `profiles.role`:
 3. Deploy.
 
 Vercel will build the Next.js app automatically with the default `npm run build` command.
+
+## AI wiki workflow
+The wiki can answer questions over docs indexed in Gemini File Search.
+
+1. Upload your docs to the `arifmind-docs` File Search store in Google AI Studio.
+2. Start the app:
+
+```bash
+npm run dev
+```
+
+4. Open `/wiki` and use the **Ask ArifMind** panel
+
+The assistant uses:
+- `GEMINI_API_KEY` for File Search and answer generation
+
+If the File Search store has no docs yet, the wiki browser still works, but AI answers will be generic.

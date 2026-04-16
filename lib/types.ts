@@ -13,6 +13,19 @@ export type WikiArticle = {
   featured?: boolean;
 };
 
+export type WikiAnswerSource = {
+  id: string;
+  title: string;
+  sourceUrl: string;
+  folderPath: string;
+  score?: number;
+};
+
+export type WikiAskResponse = {
+  answer: string;
+  sources: WikiAnswerSource[];
+};
+
 export type LessonLearned = {
   id: string;
   title: string;
