@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { AlertTriangle, CheckCircle2, Search, Sparkles } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Search } from "lucide-react";
 
 import { SectionHeading } from "@/components/section-heading";
 import { Badge } from "@/components/ui/badge";
@@ -134,10 +134,10 @@ export function LessonsWorkbench({ initialLessons }: LessonsWorkbenchProps) {
         <CardContent className="space-y-4">
           {filteredLessons.length > 0 ? (
             filteredLessons.map((lesson) => (
-              <div key={lesson.id} className="rounded-2xl border border-border/70 p-4">
+              <Link href={`/lessons/${lesson.id}`} key={lesson.id} className="block rounded-2xl border border-border/70 p-4 transition-all hover:border-primary/40 hover:bg-muted/20 hover:shadow-md cursor-pointer">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
-                    <h3 className="font-semibold">{lesson.title}</h3>
+                    <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">{lesson.title}</h3>
                     <p className="mt-1 text-sm text-muted-foreground">
                       {lesson.productArea} · {lesson.owner}
                     </p>
@@ -172,27 +172,19 @@ export function LessonsWorkbench({ initialLessons }: LessonsWorkbenchProps) {
                       <AlertTriangle className="size-4 text-[#da3a32]" />
                       Root cause
                     </div>
-                    <p className="mt-2 text-sm leading-6 text-muted-foreground">{lesson.rootCause}</p>
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground line-clamp-2">{lesson.rootCause}</p>
                   </div>
                   <div className="rounded-xl bg-muted/40 p-3">
                     <div className="flex items-center gap-2 text-sm font-medium">
                       <CheckCircle2 className="size-4 text-primary" />
                       Immediate fix
                     </div>
-                    <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground line-clamp-2">
                       {lesson.immediateFix}
                     </p>
                   </div>
                 </div>
-                <div className="mt-3 rounded-xl bg-[#151d2f] p-4 text-sm leading-6 text-white/85">
-                  <div className="flex items-center gap-2 font-medium text-white">
-                    <Sparkles className="size-4 text-[#f0c837]" />
-                    Prevention and expert advice
-                  </div>
-                  <p className="mt-2">{lesson.prevention}</p>
-                  <p className="mt-2 text-white/70">{lesson.expertAdvice}</p>
-                </div>
-              </div>
+              </Link>
             ))
           ) : (
             <p className="text-sm text-muted-foreground">No lessons match your filters.</p>

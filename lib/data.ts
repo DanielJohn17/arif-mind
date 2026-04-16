@@ -131,6 +131,43 @@ export async function getLessonsLearned(): Promise<LessonLearned[]> {
   }));
 }
 
+export async function getLessonLearnedById(id: string): Promise<LessonLearned | null> {
+  if (!isSupabaseConfigured()) {
+    return lessonsLearned.find((l) => l.id === id) || null;
+  }
+
+  const supabase = await createSupabaseServerClient();
+
+  if (!supabase) {
+    return lessonsLearned.find((l) => l.id === id) || null;
+  }
+
+  const { data, error } = await supabase
+    .from("lessons_learned")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (error || !data) {
+    return lessonsLearned.find((l) => l.id === id) || null;
+  }
+
+  return {
+    id: data.id,
+    title: data.title,
+    status: data.status,
+    severity: data.severity,
+    productArea: data.product_area,
+    owner: data.owner,
+    rootCause: data.root_cause,
+    immediateFix: data.immediate_fix,
+    prevention: data.prevention,
+    expertAdvice: data.expert_advice,
+    tags: data.tags ?? [],
+    createdAt: data.created_at,
+  };
+}
+
 export async function getLocalizationEntries(): Promise<LocalizationEntry[]> {
   if (!isSupabaseConfigured()) {
     return localizationEntries;

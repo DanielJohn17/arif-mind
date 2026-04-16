@@ -83,6 +83,14 @@ export function WikiBrowser() {
           <Textarea
             value={question}
             onChange={(event) => setQuestion(event.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                if (!isAsking && question.trim()) {
+                  handleAsk();
+                }
+              }
+            }}
             placeholder=""
             className="min-h-24 rounded-xl border-border/70 bg-background"
           />

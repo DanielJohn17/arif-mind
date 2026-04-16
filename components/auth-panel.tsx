@@ -95,6 +95,11 @@ export function AuthPanel({ theme = "dark" }: AuthPanelProps) {
               onChange={(event) => setEmail(event.target.value)}
               placeholder="Email Address"
               className={cn("h-11 rounded-full", inputTone)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && email && password && !isLoading) {
+                  handleSignInWithPassword();
+                }
+              }}
             />
             <Input
               type="password"
@@ -102,6 +107,11 @@ export function AuthPanel({ theme = "dark" }: AuthPanelProps) {
               onChange={(event) => setPassword(event.target.value)}
               placeholder="Password"
               className={cn("h-11 rounded-full", inputTone)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && email && password && !isLoading) {
+                  handleSignInWithPassword();
+                }
+              }}
             />
             <Button
               onClick={handleSignInWithPassword}
