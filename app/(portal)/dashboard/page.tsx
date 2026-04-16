@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, BookOpen, Globe2, Lightbulb, Search, Users } from "lucide-react";
+import { ArrowRight, BookOpen, Globe2, Lightbulb, Search, Users, ExternalLink } from "lucide-react";
 
 import { MetricCard } from "@/components/metric-card";
 import { SectionHeading } from "@/components/section-heading";
@@ -8,7 +8,6 @@ import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import {
-  getDashboardMetrics,
   getExpertProfiles,
   getLessonsLearned,
   getLocalizationEntries,
@@ -43,13 +42,39 @@ const quickLinks = [
 ];
 
 export default async function DashboardPage() {
-  const [metrics, lessons, entries, experts, articles] = await Promise.all([
-    getDashboardMetrics(),
+  const [lessons, entries, experts, articles] = await Promise.all([
     getLessonsLearned(),
     getLocalizationEntries(),
     getExpertProfiles(),
     getWikiArticles(),
   ]);
+
+  const metrics = [
+    {
+      label: "Published Knowledge Assets",
+      value: articles.length.toString(),
+      change: "Active in portal",
+      tone: "positive" as const,
+    },
+    {
+      label: "Resolved Lessons Logged",
+      value: lessons.length.toString(),
+      change: `${lessons.filter(l => l.status === "Open" || l.status === "Monitoring").length} open/monitoring`,
+      tone: "neutral" as const,
+    },
+    {
+      label: "Localization Coverage",
+      value: `${entries.length} regions`,
+      change: `${entries.filter(e => e.reviewStatus === "Pending").length} pending review`,
+      tone: "attention" as const,
+    },
+    {
+      label: "Experts Listed",
+      value: experts.length.toString(),
+      change: `${experts.filter(e => e.availability === "Available").length} available now`,
+      tone: "positive" as const,
+    },
+  ];
 
   return (
     <div className="space-y-6">
@@ -151,18 +176,47 @@ export default async function DashboardPage() {
             <CardDescription>Knowledge that gets referenced most often.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {articles.slice(0, 3).map((article) => (
-              <div key={article.id} className="rounded-2xl border border-border/70 p-4">
+            <a
+              href="https://developer.arifpay.net/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block rounded-2xl border border-border/70 p-4 transition-colors hover:border-primary/40 hover:bg-muted/30"
+            >
+              <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
-                  <Badge variant="secondary">{article.category}</Badge>
+                  <Badge variant="secondary">External Docs</Badge>
                   <Badge className="bg-primary/10 text-primary hover:bg-primary/10">
-                    {article.audience}
+                    Engineering
                   </Badge>
                 </div>
-                <h3 className="mt-3 font-semibold">{article.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">{article.summary}</p>
+                <ExternalLink className="size-4 text-muted-foreground" />
               </div>
-            ))}
+              <h3 className="mt-3 font-semibold text-primary">Arifpay Developer Portal</h3>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                Build the Future of Digital Payments with Arifpay — Developer Hub for seamless, secure, and scalable FinTech integrations.
+              </p>
+            </a>
+
+            <a
+              href="https://developer.arifpay.net/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block rounded-2xl border border-border/70 p-4 transition-colors hover:border-primary/40 hover:bg-muted/30"
+            >
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <Badge variant="secondary">Testing</Badge>
+                  <Badge className="bg-primary/10 text-primary hover:bg-primary/10">
+                    Integration
+                  </Badge>
+                </div>
+                <ExternalLink className="size-4 text-muted-foreground" />
+              </div>
+              <h3 className="mt-3 font-semibold text-primary">Arifpay Sandbox</h3>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                Test & Integration Learning Environment. A flexible sandbox for testing every payment method provided by ArifPay Gateway.
+              </p>
+            </a>
           </CardContent>
         </Card>
 
