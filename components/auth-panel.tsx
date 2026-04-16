@@ -4,21 +4,48 @@ import { useState } from "react";
 import { ShieldCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-import { SectionHeading } from "@/components/section-heading";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { cn } from "@/lib/utils";
 
-export function AuthPanel() {
+type AuthPanelProps = {
+  theme?: "light" | "dark";
+};
+
+export function AuthPanel({ theme = "dark" }: AuthPanelProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
+  const isLightMode = theme === "light";
+
+  const badgeTone = isLightMode
+    ? "bg-[#e7efff] text-[#0f6fff] hover:bg-[#e7efff]"
+    : "bg-white/10 text-white hover:bg-white/10";
+  const headingTone = isLightMode ? "text-[#0f172a]" : "text-white";
+  const subTone = isLightMode ? "text-[#475569]" : "text-white/80";
+  const cardTone = isLightMode
+    ? "border-white bg-white text-[#0f172a]"
+    : "border-white/10 bg-white/10 text-white";
+  const inputTone = isLightMode
+    ? "border-[#e2e8f0] bg-white text-[#0f172a] placeholder:text-[#94a3b8]"
+    : "border-white/20 bg-white/10 text-white placeholder:text-white/70";
+  const buttonTone = isLightMode
+    ? "bg-[#0f6fff] text-white hover:bg-[#0b5bd1]"
+    : "bg-white text-[#0f6fff] hover:bg-white/90";
+  const infoCardTone = isLightMode
+    ? "border-white bg-white text-[#0f172a]"
+    : "border-white/10 bg-white/5 text-white";
+  const infoTextTone = isLightMode ? "text-[#64748b]" : "text-white/70";
+  const infoBadgeTone = isLightMode
+    ? "bg-[#eef2ff] text-[#3b4cca] hover:bg-[#eef2ff]"
+    : "bg-white/10 text-white hover:bg-white/10";
 
   async function handleSignInWithPassword() {
     if (!isSupabaseConfigured()) {
@@ -49,7 +76,7 @@ export function AuthPanel() {
     if (!error) {
       // Portal routes are protected by `[app/(portal)/layout.tsx]` and redirect to `/login`
       // when profile lookup fails. After signing in, force a refresh so cookies are used.
-      router.push("/");
+      router.push("/dashboard");
       router.refresh();
     }
   }
@@ -62,69 +89,71 @@ export function AuthPanel() {
 
   return (
     <div className="space-y-6">
-      <SectionHeading
-        eyebrow="Authentication"
-        title="Supabase auth for employees and field agents."
-        description="Use email + password sign-in for the prototype. Roles and row-level security are driven from the `profiles` table in Supabase."
-      />
-
-      <div className="grid gap-4 lg:grid-cols-[1fr_0.9fr]">
-        <Card className="border-white/70 bg-white/90 shadow-lg shadow-black/5">
-          <CardHeader>
-            <CardTitle>Email + password sign-in</CardTitle>
-            <CardDescription>
-              This prototype expects Supabase email/password auth to be enabled.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Input
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              placeholder="you@arifpay.com"
-              className="h-11 rounded-xl"
-            />
-            <Input
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              placeholder="Your password"
-              className="h-11 rounded-xl"
-            />
-            <div className="flex flex-col gap-3 sm:flex-row">
+      <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+        <div className="flex flex-col justify-center space-y-6">
+          <Badge className={cn("w-fit", badgeTone)}>Authentication</Badge>
+          <div className="space-y-3">
+            <h1 className={cn("text-4xl font-semibold tracking-tight", headingTone)}>
+              Hello!
+            </h1>
+            <p className={cn("text-sm", subTone)}>
+              Sign in with your ArifPay credentials to access operational knowledge, lessons, and
+              expert insights.
+            </p>
+          </div>
+          <Card className={cn("shadow-2xl shadow-black/20", cardTone)}>
+            <CardContent className="space-y-4 p-6">
+              <Input
+                type="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                placeholder="Email Address"
+                className={cn("h-11 rounded-full", inputTone)}
+              />
+              <Input
+                type="password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                placeholder="Password"
+                className={cn("h-11 rounded-full", inputTone)}
+              />
               <Button
                 onClick={handleSignInWithPassword}
                 disabled={isLoading || !email || !password}
-                className="h-11 rounded-xl"
+                className={cn("h-11 w-full rounded-full", buttonTone)}
               >
-                {isLoading ? "Signing in..." : "Sign in"}
+                {isLoading ? "Signing in..." : "Login"}
               </Button>
-              <Button onClick={handleSignOut} variant="outline" className="h-11 rounded-xl">
+              <button
+                type="button"
+                onClick={handleSignOut}
+                className={cn("text-left text-xs", isLightMode ? "text-[#64748b] hover:text-[#0f172a]" : "text-white/70 hover:text-white")}
+              >
                 Sign out
-              </Button>
-            </div>
-            {message ? <p className="text-sm text-muted-foreground">{message}</p> : null}
-          </CardContent>
-        </Card>
+              </button>
+              {message ? <p className={cn("text-xs", infoTextTone)}>{message}</p> : null}
+            </CardContent>
+          </Card>
+        </div>
 
-        <Card className="border-white/70 bg-[#151d2f] text-white shadow-2xl shadow-black/15">
+        <Card className={cn("shadow-2xl shadow-black/15", infoCardTone)}>
           <CardHeader>
             <CardTitle>Prototype security model</CardTitle>
-            <CardDescription className="text-white/70">
+            <CardDescription className={infoTextTone}>
               Authenticated users can read knowledge, while admins manage publishing and edits.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4 text-sm leading-6 text-white/85">
-            <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-4">
-              <ShieldCheck className="size-5 text-[#1f8f4d]" />
+          <CardContent className={cn("space-y-4 text-sm leading-6", isLightMode ? "text-[#0f172a]" : "text-white/85")}>
+            <div className={cn("flex items-center gap-3 rounded-2xl p-4", isLightMode ? "border border-[#e2e8f0] bg-[#f8fafc]" : "border border-white/10 bg-white/5")}>
+              <ShieldCheck className={cn("size-5", isLightMode ? "text-[#0f6fff]" : "text-[#f0c837]")} />
               `admin`, `employee`, and `field_agent` roles are enforced through RLS policies.
             </div>
             <div className="flex flex-wrap gap-2">
-              <Badge className="bg-white/10 text-white hover:bg-white/10">Supabase Auth</Badge>
-              <Badge className="bg-white/10 text-white hover:bg-white/10">RLS</Badge>
-              <Badge className="bg-white/10 text-white hover:bg-white/10">Email + password</Badge>
+              <Badge className={infoBadgeTone}>Supabase Auth</Badge>
+              <Badge className={infoBadgeTone}>RLS</Badge>
+              <Badge className={infoBadgeTone}>Email + password</Badge>
             </div>
-            <p className="text-white/70">
+            <p className={infoTextTone}>
               If environment variables are not present, the portal still renders with seeded demo data so stakeholders can review the experience immediately.
             </p>
           </CardContent>

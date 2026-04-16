@@ -12,7 +12,7 @@ export default async function PortalLayout({
   const profile = await getCurrentUserProfile();
 
   if (isSupabaseConfigured() && !profile) {
-    redirect("/login");
+    redirect("/");
   }
 
   return (

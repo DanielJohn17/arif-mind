@@ -12,7 +12,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { cn } from "@/lib/utils";
 
 const navigation = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/wiki", label: "Wiki", icon: BookOpen },
   { href: "/lessons", label: "Lessons", icon: Compass },
   { href: "/localization", label: "Localization", icon: Map },
