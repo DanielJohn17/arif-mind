@@ -46,18 +46,35 @@ npm run dev
 If the Supabase env vars are missing, ArifMind still runs in demo mode using seeded in-app mock data so the prototype remains reviewable.
 
 ### Optional AI wiki assistant env
-To use the Gemini File Search assistant inside the wiki, also set:
+To use the Gemini-powered API assistant inside the wiki, also set:
 
 ```bash
 GEMINI_API_KEY=...
 ```
 
-Optional overrides:
+Optional override:
 
 ```bash
-GEMINI_FILE_SEARCH_STORE=arifmind-docs
 GEMINI_WIKI_MODEL=gemini-2.5-flash
 ```
+
+### Compact API index (for low-context Gemini usage)
+The wiki assistant now reads a compact endpoint index instead of loading the full Postman export into prompt context.
+
+Source and generated files:
+
+- Source collection: `data/api.json`
+- Compact index: `data/api-compact/index.json`
+- Endpoint shards: `data/api-compact/endpoints/*.json`
+- Shared templates: `data/api-compact/shared/templates.json`
+
+Regenerate compact artifacts after changing `data/api.json`:
+
+```bash
+node scripts/build-api-compact.mjs
+```
+
+This split keeps the first-pass retrieval context small and only loads a few endpoint shards per question.
 
 ## Supabase setup
 Enable **Email** auth (email + password) in your Supabase project settings.
@@ -101,18 +118,19 @@ The security model is based on three roles in `profiles.role`:
 Vercel will build the Next.js app automatically with the default `npm run build` command.
 
 ## AI wiki workflow
-The wiki can answer questions over docs indexed in Gemini File Search.
+The wiki can answer questions over the local compact API dataset generated from `data/api.json`.
 
-1. Upload your docs to the `arifmind-docs` File Search store in Google AI Studio.
-2. Start the app:
+1. Ensure compact artifacts exist (run `node scripts/build-api-compact.mjs` after API collection updates).
+2. Set `GEMINI_API_KEY` in `.env.local`.
+3. Start the app:
 
 ```bash
 npm run dev
 ```
 
-4. Open `/wiki` and use the **Ask ArifMind** panel
+4. Open `/wiki` and use the **Ask ArifMind** panel.
 
 The assistant uses:
-- `GEMINI_API_KEY` for File Search and answer generation
+- `GEMINI_API_KEY` for answer generation
 
-If the File Search store has no docs yet, the wiki browser still works, but AI answers will be generic.
+If compact API artifacts are missing or stale, regenerate them before testing assistant answers.
