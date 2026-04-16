@@ -11,6 +11,7 @@ import type { WikiAskResponse } from "@/lib/types";
 
 export function WikiBrowser() {
   const [question, setQuestion] = useState("");
+  const [activeQuestion, setActiveQuestion] = useState("");
   const [askResult, setAskResult] = useState<WikiAskResponse | null>(null);
   const [askError, setAskError] = useState<string | null>(null);
   const [isAsking, setIsAsking] = useState(false);
@@ -21,8 +22,12 @@ export function WikiBrowser() {
       return;
     }
 
+    const currentQuestion = question;
+    setQuestion("");
+    setActiveQuestion(currentQuestion);
     setIsAsking(true);
     setAskError(null);
+    setAskResult(null); // Clear previous result while asking
 
     try {
       const response = await fetch("/api/wiki/ask", {
@@ -31,7 +36,7 @@ export function WikiBrowser() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          question,
+          question: currentQuestion,
         }),
       });
 
@@ -52,11 +57,24 @@ export function WikiBrowser() {
       setAskResult(body as WikiAskResponse);
     } catch (error) {
       setAskResult(null);
-      setAskError(
-        error instanceof Error
-          ? error.message
-          : "Failed to get an answer from the wiki assistant."
-      );
+      
+      let errorMessage = error instanceof Error
+        ? error.message
+        : "Failed to get an answer from the wiki assistant.";
+
+      try {
+        const parsed = JSON.parse(errorMessage);
+        if (parsed.error && parsed.error.message) {
+          errorMessage = parsed.error.message;
+        } else if (parsed.message) {
+          errorMessage = parsed.message;
+        }
+      } catch (e) {
+        // Not valid JSON, keep original message
+      }
+
+      setAskError(errorMessage);
+      setQuestion(currentQuestion); // Repopulate input box on error for reprompting
     } finally {
       setIsAsking(false);
     }
@@ -73,10 +91,11 @@ export function WikiBrowser() {
   const isInitialState = !askResult && !isAsking && !askError;
 
   return (
-    <div className="flex flex-col h-[calc(100vh-100px)] max-w-4xl mx-auto w-full">
-      <div className="flex-1 overflow-y-auto px-4 py-8 space-y-6">
-        {isInitialState && (
-          <div className="flex flex-col items-center justify-center h-full space-y-8 animate-in fade-in zoom-in duration-500 text-center mt-12">
+    <div className="flex flex-col h-[calc(100vh-100px)] w-full">
+      <div className="flex-1 overflow-y-auto w-full">
+        <div className="max-w-4xl mx-auto w-full px-4 py-8 space-y-6 flex flex-col min-h-full">
+          {isInitialState && (
+            <div className="flex flex-col items-center justify-center flex-1 space-y-8 animate-in fade-in zoom-in duration-500 text-center py-12">
             <div className="space-y-4 max-w-lg">
               <div className="mx-auto w-fit flex items-center justify-center p-3 bg-primary/10 rounded-2xl mb-4">
                 <Sparkles className="size-8 text-primary" />
@@ -124,17 +143,31 @@ export function WikiBrowser() {
         )}
 
         {isAsking && (
-          <div className="flex justify-start">
-            <div className="bg-muted/30 border border-border/50 rounded-2xl p-4 flex items-center gap-3 animate-pulse">
-              <Sparkles className="size-5 text-primary" />
-              <span className="text-muted-foreground">Searching knowledge base...</span>
+          <div className="space-y-4">
+            <div className="flex justify-end">
+              <div className="bg-primary text-primary-foreground rounded-2xl px-5 py-3 max-w-[85%] text-base shadow-sm">
+                {activeQuestion}
+              </div>
+            </div>
+            <div className="flex justify-start">
+              <div className="bg-muted/30 border border-border/50 rounded-2xl p-4 flex items-center gap-3 animate-pulse">
+                <Sparkles className="size-5 text-primary" />
+                <span className="text-muted-foreground">Searching knowledge base...</span>
+              </div>
             </div>
           </div>
         )}
 
         {askError && (
-          <div className="rounded-2xl border border-destructive/25 bg-destructive/5 p-4 text-sm text-destructive">
-            {askError}
+          <div className="space-y-4">
+            <div className="flex justify-end">
+              <div className="bg-primary text-primary-foreground rounded-2xl px-5 py-3 max-w-[85%] text-base shadow-sm">
+                {activeQuestion}
+              </div>
+            </div>
+            <div className="rounded-2xl border border-destructive/25 bg-destructive/5 p-4 text-sm text-destructive">
+              {askError}
+            </div>
           </div>
         )}
 
@@ -222,6 +255,7 @@ export function WikiBrowser() {
             </div>
           </div>
         )}
+        </div>
       </div>
 
       <div className="p-4 bg-background/80 backdrop-blur-md border-t border-border/40 shrink-0 sticky bottom-0">

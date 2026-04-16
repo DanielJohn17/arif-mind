@@ -140,13 +140,12 @@ function ChatInputSubmit({
 }: ChatInputSubmitProps) {
 	const context = useContext(ChatInputContext);
 	const loading = loadingProp ?? context.loading;
-	const onStop = onStopProp ?? context.onStop;
 	const onSubmit = onSubmitProp ?? context.onSubmit;
 
-	if (loading && onStop) {
+	if (loading) {
 		return (
 			<Button
-				onClick={onStop}
+				disabled
 				className={cn(
 					"shrink-0 rounded-full p-1.5 h-fit border dark:border-zinc-600",
 					className,
@@ -154,26 +153,31 @@ function ChatInputSubmit({
 				{...props}
 			>
 				<svg
+					className="animate-spin size-4"
 					xmlns="http://www.w3.org/2000/svg"
-					width="24"
-					height="24"
+					fill="none"
 					viewBox="0 0 24 24"
-					fill="currentColor"
-					stroke="currentColor"
-					strokeWidth="2"
-					strokeLinecap="round"
-					strokeLinejoin="round"
-					aria-label="Stop"
 				>
-					<title>Stop</title>
-					<rect x="6" y="6" width="12" height="12" />
+					<circle
+						className="opacity-25"
+						cx="12"
+						cy="12"
+						r="10"
+						stroke="currentColor"
+						strokeWidth="4"
+					></circle>
+					<path
+						className="opacity-75"
+						fill="currentColor"
+						d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+					></path>
 				</svg>
 			</Button>
 		);
 	}
 
 	const isDisabled =
-		typeof context.value !== "string" || context.value.trim().length === 0;
+		typeof context.value !== "string" || context.value.trim().length === 0 || loading;
 
 	return (
 		<Button
