@@ -1,12 +1,14 @@
  "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Bell, BookOpen, Compass, LayoutDashboard, Map, Users } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { cn } from "@/lib/utils";
 
 const navigation = [
@@ -29,6 +31,19 @@ export function AppShell({
   role = "admin",
 }: AppShellProps) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  async function handleLogout() {
+    if (!isSupabaseConfigured()) {
+      router.push("/login");
+      return;
+    }
+
+    const supabase = createSupabaseBrowserClient();
+    await supabase?.auth.signOut();
+    router.push("/login");
+    router.refresh();
+  }
 
   return (
     <div className="min-h-screen">
@@ -99,15 +114,16 @@ export function AppShell({
                     Most repeated question this week: settlement callback verification.
                   </p>
                 </div>
-                <Link
-                  href="/login"
+                <button
+                  type="button"
+                  onClick={handleLogout}
                   className={cn(
                     buttonVariants(),
                     "h-11 w-full bg-white text-sidebar hover:bg-white/90"
                   )}
                 >
-                  Auth & settings
-                </Link>
+                  Log out
+                </button>
               </div>
             </CardContent>
           </Card>

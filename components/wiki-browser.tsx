@@ -2,18 +2,15 @@
 
 import { useState } from "react";
 import { Sparkles } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import type { WikiArticle, WikiAskResponse } from "@/lib/types";
+import type { WikiAskResponse } from "@/lib/types";
 
-type WikiBrowserProps = {
-  articles: WikiArticle[];
-};
-
-export function WikiBrowser({ articles: _articles }: WikiBrowserProps) {
+export function WikiBrowser() {
   const [question, setQuestion] = useState("");
   const [askResult, setAskResult] = useState<WikiAskResponse | null>(null);
   const [askError, setAskError] = useState<string | null>(null);
@@ -114,9 +111,59 @@ export function WikiBrowser({ articles: _articles }: WikiBrowserProps) {
                 <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
                   Answer
                 </p>
-                <p className="text-sm leading-6 text-foreground whitespace-pre-wrap">
+                <ReactMarkdown
+                  components={{
+                    code({ className, children, ...props }) {
+                      const isBlock = Boolean(className);
+
+                      if (isBlock) {
+                        return (
+                          <pre className="mt-3 overflow-x-auto rounded-xl bg-muted/40 p-3 text-xs leading-5">
+                            <code className="font-mono" {...props}>
+                              {children}
+                            </code>
+                          </pre>
+                        );
+                      }
+
+                      return (
+                        <code className="rounded bg-muted/40 px-1 py-0.5 font-mono text-xs" {...props}>
+                          {children}
+                        </code>
+                      );
+                    },
+                    p({ children, ...props }) {
+                      return (
+                        <p className="text-sm leading-6 text-foreground" {...props}>
+                          {children}
+                        </p>
+                      );
+                    },
+                    ul({ children, ...props }) {
+                      return (
+                        <ul className="ml-5 list-disc space-y-1 text-sm text-foreground" {...props}>
+                          {children}
+                        </ul>
+                      );
+                    },
+                    ol({ children, ...props }) {
+                      return (
+                        <ol className="ml-5 list-decimal space-y-1 text-sm text-foreground" {...props}>
+                          {children}
+                        </ol>
+                      );
+                    },
+                    li({ children, ...props }) {
+                      return (
+                        <li className="leading-6" {...props}>
+                          {children}
+                        </li>
+                      );
+                    },
+                  }}
+                >
                   {askResult.answer}
-                </p>
+                </ReactMarkdown>
               </div>
             </div>
           ) : null}

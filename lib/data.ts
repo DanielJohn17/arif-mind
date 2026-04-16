@@ -126,6 +126,7 @@ export async function getLessonsLearned(): Promise<LessonLearned[]> {
     immediateFix: lesson.immediate_fix,
     prevention: lesson.prevention,
     expertAdvice: lesson.expert_advice,
+    tags: lesson.tags ?? [],
     createdAt: lesson.created_at,
   }));
 }

@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { ExpertProfile } from "@/lib/types";
 
 type ExpertFinderProps = {
@@ -60,16 +61,17 @@ export function ExpertFinder({ experts }: ExpertFinderProps) {
               className="h-11 rounded-xl pl-10"
             />
           </div>
-          <select
-            value={availability}
-            onChange={(event) => setAvailability(event.target.value)}
-            className="h-11 rounded-xl border border-border bg-background px-4 text-sm outline-none"
-          >
-            <option>All</option>
-            <option>Available</option>
-            <option>Busy</option>
-            <option>On Field Duty</option>
-          </select>
+          <Select value={availability} onValueChange={(val) => setAvailability(val || "All")}>
+            <SelectTrigger className="h-11 rounded-xl border border-border bg-background px-4 text-sm w-full lg:w-[200px]">
+              <SelectValue placeholder="Availability" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="All">All</SelectItem>
+              <SelectItem value="Available">Available</SelectItem>
+              <SelectItem value="Busy">Busy</SelectItem>
+              <SelectItem value="On Field Duty">On Field Duty</SelectItem>
+            </SelectContent>
+          </Select>
         </CardContent>
       </Card>
 

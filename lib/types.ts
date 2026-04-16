@@ -37,6 +37,7 @@ export type LessonLearned = {
   immediateFix: string;
   prevention: string;
   expertAdvice: string;
+  tags?: string[];
   createdAt: string;
 };
 

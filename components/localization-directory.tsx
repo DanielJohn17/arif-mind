@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
@@ -110,23 +111,24 @@ export function LocalizationDirectory({
                 <CardTitle>Regional knowledge cards</CardTitle>
                 <CardDescription>Map-first is deferred; cards and filters come first for speed.</CardDescription>
               </div>
-              <div className="flex flex-col gap-3 sm:flex-row">
+              <div className="flex flex-col gap-3 sm:flex-row w-full sm:w-auto">
                 <Input
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
                   placeholder="Search region, language, or key term"
                   className="h-10 w-full rounded-xl sm:w-64"
                 />
-                <select
-                  value={status}
-                  onChange={(event) => setStatus(event.target.value)}
-                  className="h-10 rounded-xl border border-border bg-background px-3 text-sm outline-none"
-                >
-                  <option>All</option>
-                  <option>Reviewed</option>
-                  <option>Pending</option>
-                  <option>Needs Follow-up</option>
-                </select>
+                <Select value={status} onValueChange={(val) => setStatus(val || "All")}>
+                  <SelectTrigger className="h-10 rounded-xl border border-border bg-background px-3 text-sm w-full sm:w-[160px]">
+                    <SelectValue placeholder="Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="All">All Statuses</SelectItem>
+                    <SelectItem value="Reviewed">Reviewed</SelectItem>
+                    <SelectItem value="Pending">Pending</SelectItem>
+                    <SelectItem value="Needs Follow-up">Needs Follow-up</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </CardHeader>

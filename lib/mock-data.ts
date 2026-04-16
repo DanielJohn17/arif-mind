@@ -93,6 +93,7 @@ export const lessonsLearned: LessonLearned[] = [
       "Added idempotency checks to the settlement consumer and an alert for queue growth anomalies.",
     expertAdvice:
       "When the queue spikes, confirm whether the issue is upstream duplication before scaling workers.",
+    tags: ["Timeout", "POS", "Settlement"],
     createdAt: "2026-04-07",
   },
   {
@@ -110,6 +111,7 @@ export const lessonsLearned: LessonLearned[] = [
       "Standardize font validation in release QA for every region-specific printer profile.",
     expertAdvice:
       "Tie localization QA to device firmware checks, not just translated strings.",
+    tags: ["Localization", "Firmware"],
     createdAt: "2026-04-12",
   },
   {
@@ -127,6 +129,7 @@ export const lessonsLearned: LessonLearned[] = [
       "Incorporate regional transaction behavior data into fraud thresholds and review seasonality quarterly.",
     expertAdvice:
       "Fraud models need localization context or they will misread normal peak behavior as abuse.",
+    tags: ["Risk", "Fraud"],
     createdAt: "2026-04-14",
   },
 ];
