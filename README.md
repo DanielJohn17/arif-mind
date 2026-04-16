@@ -46,11 +46,23 @@ npm run dev
 If the Supabase env vars are missing, ArifMind still runs in demo mode using seeded in-app mock data so the prototype remains reviewable.
 
 ## Supabase setup
+Enable **Email** auth (email + password) in your Supabase project settings.
 
 Run the SQL files in this order inside the Supabase SQL editor:
 
 1. `supabase/schema.sql`
 2. `supabase/seed.sql`
+
+### Seed mock employee login accounts
+The `/login` page uses Supabase email/password authentication.
+
+1. Set a local env var for the admin seed script:
+   - `SUPABASE_SERVICE_ROLE_KEY` (service role key from Supabase)
+2. Seed the demo auth users (reads committed credentials from `auth-mock-employees.txt`):
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... node scripts/seed-mock-employees.js
+```
 
 The schema includes:
 

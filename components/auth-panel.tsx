@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ShieldCheck } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import { SectionHeading } from "@/components/section-heading";
 import { Badge } from "@/components/ui/badge";
@@ -13,10 +14,13 @@ import { isSupabaseConfigured } from "@/lib/supabase/config";
 
 export function AuthPanel() {
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  async function handleMagicLink() {
+  const router = useRouter();
+
+  async function handleSignInWithPassword() {
     if (!isSupabaseConfigured()) {
       setMessage("Supabase env vars are missing, so ArifMind is currently running in demo mode.");
       return;
@@ -30,20 +34,24 @@ export function AuthPanel() {
     }
 
     setIsLoading(true);
-    const { error } = await supabase.auth.signInWithOtp({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
-      options: {
-        emailRedirectTo:
-          typeof window !== "undefined" ? `${window.location.origin}/` : undefined,
-      },
+      password,
     });
 
     setIsLoading(false);
     setMessage(
       error
-        ? "Magic link could not be sent. Confirm the auth provider and redirect URL in Supabase."
-        : "Magic link sent. Check your inbox to continue."
+        ? error.message
+        : "Signed in successfully. Redirecting to the portal..."
     );
+
+    if (!error) {
+      // Portal routes are protected by `[app/(portal)/layout.tsx]` and redirect to `/login`
+      // when profile lookup fails. After signing in, force a refresh so cookies are used.
+      router.push("/");
+      router.refresh();
+    }
   }
 
   async function handleSignOut() {
@@ -57,15 +65,15 @@ export function AuthPanel() {
       <SectionHeading
         eyebrow="Authentication"
         title="Supabase auth for employees and field agents."
-        description="Use magic-link sign-in for the prototype. Roles and row-level security are driven from the `profiles` table in Supabase."
+        description="Use email + password sign-in for the prototype. Roles and row-level security are driven from the `profiles` table in Supabase."
       />
 
       <div className="grid gap-4 lg:grid-cols-[1fr_0.9fr]">
         <Card className="border-white/70 bg-white/90 shadow-lg shadow-black/5">
           <CardHeader>
-            <CardTitle>Magic link sign-in</CardTitle>
+            <CardTitle>Email + password sign-in</CardTitle>
             <CardDescription>
-              This prototype expects Supabase email auth with a valid redirect URL configured.
+              This prototype expects Supabase email/password auth to be enabled.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -76,13 +84,20 @@ export function AuthPanel() {
               placeholder="you@arifpay.com"
               className="h-11 rounded-xl"
             />
+            <Input
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              placeholder="Your password"
+              className="h-11 rounded-xl"
+            />
             <div className="flex flex-col gap-3 sm:flex-row">
               <Button
-                onClick={handleMagicLink}
-                disabled={isLoading || !email}
+                onClick={handleSignInWithPassword}
+                disabled={isLoading || !email || !password}
                 className="h-11 rounded-xl"
               >
-                {isLoading ? "Sending..." : "Send magic link"}
+                {isLoading ? "Signing in..." : "Sign in"}
               </Button>
               <Button onClick={handleSignOut} variant="outline" className="h-11 rounded-xl">
                 Sign out
@@ -107,7 +122,7 @@ export function AuthPanel() {
             <div className="flex flex-wrap gap-2">
               <Badge className="bg-white/10 text-white hover:bg-white/10">Supabase Auth</Badge>
               <Badge className="bg-white/10 text-white hover:bg-white/10">RLS</Badge>
-              <Badge className="bg-white/10 text-white hover:bg-white/10">Magic link</Badge>
+              <Badge className="bg-white/10 text-white hover:bg-white/10">Email + password</Badge>
             </div>
             <p className="text-white/70">
               If environment variables are not present, the portal still renders with seeded demo data so stakeholders can review the experience immediately.
